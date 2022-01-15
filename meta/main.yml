@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: 3proxy
+  namespace: sv0
+  author: slavik@svyrydiuk.eu
+  maintainer: slavik@svyrydiuk.eu
+  description: Install and configure 3proxy
+  min_ansible_version: 2.11
+  license: proprietary
+  platforms:
+    - name: Debian
+      versions:
+        - buster
+
+dependencies: []
