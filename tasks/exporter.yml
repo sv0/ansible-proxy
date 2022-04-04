@@ -1,0 +1,29 @@
+---
+- name: create systemd file
+  template:
+    src: consul-exporter.service.j2
+    dest: "/etc/systemd/system/consul-exporter.service"
+  notify: restart consul-exporter
+
+- name: ensure consul-exporter is enabled and started
+  systemd:
+    name: consul-exporter
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- name: Force all notified handlers to run at this point
+  meta: flush_handlers
+
+- name: get service facts
+  service_facts:
+
+- name: Register consul exporter service
+  consul:
+    service_name: consul-exporter
+    service_port: 9107
+    interval: 15s
+    http: http://localhost:9107/metrics
+  when:
+    - ansible_facts.services["consul"] is defined
+    - ansible_facts.services["consul"]["state"] == "running"

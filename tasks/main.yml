@@ -1,0 +1,14 @@
+---
+- name: debug groups
+  debug:
+    msg: "{{ groups['proxy'] }}"
+  tags:
+    - debug
+
+- debug:
+    var: ansible_distribution_release
+
+- name: Install and configure 3proxy
+  block:
+    - name: Install 3proxy
+      include: install.yml

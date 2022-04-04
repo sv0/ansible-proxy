@@ -1,0 +1,22 @@
+---
+proxy_version: "0.9.4"
+
+# add users
+# /usr/local/3proxy/conf/add3proxyuser.sh
+
+# Default config uses Google's DNS.
+# It's recommended to use provider supplied DNS or install local recursor, e.g. pdns-recursor.
+# run '/usr/local/3proxy/conf/add3proxyuser.sh admin password' to configure 'admin' user
+# Configure preferred DNS in /usr/local/3proxy/conf/3proxy.cfg.
+
+proxy_config_path: /usr/local/3proxy/conf/
+proxy_config: "{{ proxy_config_path }}/3proxy.cfg"
+proxy_internal: 127.0.0.1
+proxy_nservers:
+  - 8.8.8.8
+  - 1.1.1.1
+
+proxy_user: proxy
+proxy_group: proxy
+
+proxy_bind_addr: "{{ ansible_default_ipv4.address | default(ansible_all_ipv4_addresses[0]) }}"

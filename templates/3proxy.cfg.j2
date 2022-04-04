@@ -1,0 +1,27 @@
+nscache 65536
+{% for nserver in proxy_nservers %}
+nserver {{ nserver }}
+{% endfor %}
+
+config /conf/3proxy.cfg
+monitor /conf/3proxy.cfg
+
+log /logs/3proxy-%y%m%d.log D
+rotate 60
+counter /count/3proxy.3cf
+
+users $/conf/passwd
+
+include /conf/counters
+include /conf/bandlimiters
+
+internal {{ proxy_internal }}
+auth strong
+deny * * 127.0.0.1
+allow *
+proxy -n -64
+socks -4
+flush
+allow admin
+
+admin -p8080
