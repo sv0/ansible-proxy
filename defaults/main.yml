@@ -22,6 +22,4 @@ proxy_user: proxy
 proxy_group: proxy
 
 proxy_bind_addr:
-  "{{ (
-      ansible_default_ipv4.address | default(ansible_all_ipv4_addresses[0])
-  ) }}"
+  "{{ ansible_default_ipv4.address | default(ansible_all_ipv4_addresses[0]) }}"

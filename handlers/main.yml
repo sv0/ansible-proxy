@@ -1,10 +1,10 @@
 ---
-- name: restart 3proxy
+- name: Restart 3proxy
   service:
     name: 3proxy
     enabled: true
     state: restarted
 
-- name: reload systemd
+- name: Reload systemd
   systemd:
     state: reloaded
