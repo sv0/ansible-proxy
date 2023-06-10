@@ -1,7 +1,7 @@
 ---
 - name: Debug groups
   debug:
-    msg: "{{ groups['proxy'] }}"
+    msg: "{{ groups.get('proxy') }}"
   tags:
     - debug
 
@@ -9,11 +9,21 @@
   debug:
     var: ansible_distribution_release
 
-- name: Install 3proxy deb from github.com
+- name: Install 3proxy deb package from github.com
   apt:
     deb: "https://github.com/3proxy/3proxy/\
           releases/download/{{ proxy_version }}/\
           3proxy-{{ proxy_version }}.{{ ansible_architecture }}.deb"
+  tags:
+    - install
+
+- name: "Add 3proxy user: {{ proxy_user }}"
+  user:
+    name: "{{ proxy_user }}"
+    group: "{{ proxy_group }}"
+    system: true
+    shell: /usr/sbin/nologin
+    createhome: false
   tags:
     - install
 
@@ -23,13 +33,19 @@
     dest: "{{ proxy_config }}"
     mode: 0644
   notify: Restart 3proxy
+  tags:
+    - config
 
-- name: Create passwd
-  copy:
-    src: files/conf/passwd
-    dest: "{{ proxy_config_path }}/passwd"
+- name: Create(touch) passwd
+  file:
+    path: "{{ proxy_config_path }}/passwd"
+    state: touch
     mode: 0640
+    owner: "{{ proxy_user }}"
+    group: "{{ proxy_group }}"
   notify: Restart 3proxy
+  tags:
+    - config
 
 - name: Enable 3proxy service
   systemd:
@@ -37,13 +53,5 @@
     enabled: true
     masked: false
     state: restarted
-
-# - name: Ensure 3proxy user
-#   user:
-#     name: "{{ 3proxy_user }}"
-#     group: "{{ 3proxy_group }}"
-#     system: yes
-#     shell: /usr/sbin/nologin
-#     createhome: no
-#   tags:
-#     - install
+  tags:
+    - config
