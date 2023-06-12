@@ -36,14 +36,30 @@
   tags:
     - config
 
-- name: Create(touch) passwd
+- name: Remove old passwd
+  file:
+    path: "{{ proxy_config_path }}/passwd"
+    state: absent
+  changed_when: false
+  tags:
+    - config
+
+- name: Create/update 3proxy passwd file
+  ansible.builtin.command:
+    '/bin/sh /usr/local/3proxy/conf/add3proxyuser.sh {{ item.username }} {{ item.password }}'
+  with_items: "{{ proxy_users_list }}"
+  no_log: true
+  tags:
+    - config
+
+- name: "Ensure access mode 0640 for {{ proxy_config_path }}/passwd"
   file:
     path: "{{ proxy_config_path }}/passwd"
     state: touch
     mode: 0640
     owner: "{{ proxy_user }}"
     group: "{{ proxy_group }}"
-  notify: Restart 3proxy
+  changed_when: false
   tags:
     - config
 
@@ -52,6 +68,6 @@
     name: 3proxy
     enabled: true
     masked: false
-    state: restarted
+    state: started
   tags:
     - config
