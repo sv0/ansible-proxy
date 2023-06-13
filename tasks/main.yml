@@ -46,9 +46,14 @@
 
 - name: Create/update 3proxy passwd file
   ansible.builtin.command:
-    '/bin/sh /usr/local/3proxy/conf/add3proxyuser.sh {{ item.username }} {{ item.password }}'
+    argv:
+      - /bin/sh
+      - /usr/local/3proxy/conf/add3proxyuser.sh
+      - '{{ item.username }}'
+      - '{{ item.password }}'
   with_items: "{{ proxy_users_list }}"
   no_log: true
+  notify: Restart 3proxy
   tags:
     - config
 
