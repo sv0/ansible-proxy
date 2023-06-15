@@ -11,5 +11,17 @@ galaxy_info:
       versions:
         - buster
         - bullseye
+    - name: Ubuntu
+      versions:
+        - bionic
+        - xenial
+        - jammy
+
+  galaxy_tags:
+    - web
+    - socks
+    - socks4
+    - socks5
+    - proxy
 
 dependencies: []
